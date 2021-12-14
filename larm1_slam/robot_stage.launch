@@ -1,0 +1,15 @@
+<launch>
+  <!-- turtlebot_teleop_key already has its own built in velocity smoother -->
+  
+  <!-- **********STAGE********* -->
+  <node pkg="stage_ros" type="stageros" name="stageros" args="$(find stage_ros)/world/willow-erratic.world">
+  </node>
+  
+  <!-- ************ROBOT******** -->
+  <node pkg="my_teleop" type="justmovebitch.py" name="justmovebitch"  output="screen">
+    <param name="scale_linear" value="0.5" type="double"/>
+    <param name="scale_angular" value="1.5" type="double"/>
+    <!--remap from="cmd_vel" to="cmd_vel"/-->
+  </node>
+  
+</launch>

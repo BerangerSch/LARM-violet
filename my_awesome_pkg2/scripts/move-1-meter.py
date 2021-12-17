@@ -21,7 +21,6 @@ def move_command(data):
       cmd.linear.x = 0.1
       cmd.angular.z = 0.0
     else :
-<<<<<<< HEAD
         while data.ranges[360]< 0.5:
          cmd.linear.x = 0
          cmd.angular.z =0.2
@@ -29,20 +28,6 @@ def move_command(data):
 
 
 
-=======
-        cmd.linear.x = 0
-        rospy.Timer(rospy.Duration(2), turn(data), oneshot=True)
-
-
-
-    commandPublisher.publish(cmd)
-    
-    rospy.Subscriber('/scan', LaserScan, move_command)
-
-def turn(data):
-    global cmd
-    cmd.angular.z =0.2
->>>>>>> 24a8694628a28440438359414edaa6cf611b6eb2
     commandPublisher.publish(cmd)
     
     rospy.Subscriber('/scan', LaserScan, move_command)
@@ -50,11 +35,7 @@ def turn(data):
 
 
 # call the move_command at a regular frequency:
-<<<<<<< HEAD
 rospy.Timer( rospy.Duration(0.1), move_command(), oneshot=False )
-=======
-rospy.Timer( rospy.Duration(0.1), turn(), oneshot=False )
->>>>>>> 24a8694628a28440438359414edaa6cf611b6eb2
 
 # spin() enter the program in a infinite loop
 print("Start move.py")

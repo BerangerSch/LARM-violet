@@ -11,5 +11,5 @@
     <param name="scale_angular" value="1.5" type="double"/>
     <!--remap from="cmd_vel" to="cmd_vel"/-->
   </node>
-  
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot_stage)/rviz/robot_navigation.rviz"/>
 </launch>

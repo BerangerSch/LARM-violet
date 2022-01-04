@@ -1,6 +1,0 @@
-<launch>
-    <node pkg="my_awesome_pkg2" type="move-1-meter.py" name="laser_scan" output="screen">
-        
-    </node>
-    </launch> 
-    

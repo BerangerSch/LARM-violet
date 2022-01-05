@@ -1,14 +1,14 @@
 <launch>
 
     <!-- ******** SIMULATION ******** -->
-    <include file="$(find tbotgazebo)/launch/start_world.launch">
+    <include file="$(find tbot_gazebo)/launch/start_world.launch">
         <arg name="world_file" value="($find larm)/models/challenge-1.world" />
     </include>
 
     <include file="$(find tbot_gazebo)/launch/spawn_tbot.launch">
         <arg name="x" value="-3.32" />
         <arg name="y" value="-2.95" />
-        <arg name="yaw" value"2.86"/>
+        <arg name="yaw" value="2.86"/>
     </include>
 
     <!-- ******** NAVIGATION ******** -->
@@ -18,6 +18,6 @@
     <!-- ******** VISUALISATION ********-->
     <node pkg="rqt_graph" type="rqt_graph" name="graph">
     </node>
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(fing groupe-violet)/rviz/config.rviz">
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find groupe-violet)/rviz/config.rviz">
     </node>
 </launch>

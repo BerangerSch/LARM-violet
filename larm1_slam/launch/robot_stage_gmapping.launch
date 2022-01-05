@@ -1,0 +1,24 @@
+<launch>
+
+    <!-- ====== SIMULATION ====== -->
+    <include file="$(find tbot_gazebo)/launch/start_world.launch">
+        <arg name="world_file" value="$(find larm)/models/challenge-1.world" />
+        <param name="/use_sim_time" value="true"/>
+    </include>
+
+    <include file="$(find tbot_gazebo)/launch/spawn_tbot.launch">
+        <arg name="x" value="-3.32" />
+        <arg name="y" value="-2.95" />
+        <arg name="yaw" value="2.86"/>
+    </include>
+
+    <!-- ===== NAVIGATION ===== -->
+    <include file="$(find turtlebot_teleop)/launch/keyboard_teleop.launch">
+    </include>
+
+    <node pkg="gmapping" type="slam_gmapping" name="gmapping_node" >
+    </node>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find stage_ros)/rviz/stage.rviz">
+    </node>
+</launch>

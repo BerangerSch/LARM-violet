@@ -1,0 +1,5 @@
+data/haarcascades/can_cascade/imgpos/img1.jpeg 1 598 140 292 629
+data/haarcascades/can_cascade/imgpos/img2.jpeg 1 542 54 328 799
+data/haarcascades/can_cascade/imgpos/img3.jpeg 1 206 324 319 692
+data/haarcascades/can_cascade/imgpos/img4.jpeg 1 444 533 214 483
+data/haarcascades/can_cascade/imgpos/img5.jpeg 1 135 617 231 398

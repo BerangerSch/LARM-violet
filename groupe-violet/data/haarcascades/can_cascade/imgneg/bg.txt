@@ -1,8 +1,0 @@
-haarcascade/can_cascade/imgneg/img1.jpeg
-haarcascade/can_cascade/imgneg/img2.jpeg
-haarcascade/can_cascade/imgneg/img3.jpeg
-haarcascade/can_cascade/imgneg/img4.jpeg
-haarcascade/can_cascade/imgneg/img5.jpeg
-haarcascade/can_cascade/imgneg/img6.jpeg
-haarcascade/can_cascade/imgneg/img7.jpeg
-haarcascade/can_cascade/imgneg/img8.jpeg

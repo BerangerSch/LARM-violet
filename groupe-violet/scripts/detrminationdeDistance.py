@@ -29,7 +29,7 @@ def Focal_Length_Finder(measured_distance, real_width, width_in_Ref_image):
  
 # distance estimation function
 def Distance_finder(Focal_Length, real_cans_width, cans_width_in_frame):
- 
+  
     distance = (real_cans_width * Focal_Length)/cans_width_in_frame
  
     # return the distance

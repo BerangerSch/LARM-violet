@@ -1,13 +1,15 @@
 #! /usr/bin/env python
 import rospy
-import geometry_msgs.msg as geo_msgs
+from geometry_msgs.msg import Pose
 
 rospy.init_node('bottle', anonymous=True)
 
 rate = rospy.Rate(10)
 
-publisher = rospy.Publisher('/bottle', tuple, queue_size=1)
-coord = (200, 120)
+publisher = rospy.Publisher('/bottle', Pose, queue_size=1)
+p = Pose()
+p.position.x = 1100 #x
+p.position.y = 3 #depth
 while not rospy.is_shutdown():
-    publisher.publish(coord)
+    publisher.publish(p)
     rate.sleep()

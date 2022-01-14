@@ -3,7 +3,7 @@
 from __future__ import print_function
 
 from sklearn.cluster import KMeans
-from sklearn.neighbors import KNeighborsClassifier 
+from sklearn.neighbors import KNeighborsClassifier
 import matplotlib.pyplot as plt
 import cv2
 import numpy as np
@@ -13,12 +13,23 @@ import argparse
 def detectAndDisplay(frame):
     frame_gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     frame_gray = cv.equalizeHist(frame_gray)
+
+    #for the color red identification
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    lower_red = np.array([0,100,49]) 
+    lower_red = np.array([0,100,49])
     upper_red = np.array([0,100,100])
-    mask = cv2.inRange(hsv, lower_red, upper_red) 
-    #onlyred = cv2.bitwise_and(frame,frame, mask= mask)
-    #-- Detect faces
+    mask = cv2.inRange(hsv, lower_red, upper_red)
+
+    #for the centroids x and y coordinates
+    thresh=cv.threshold(frame_gray,127,255,cv.THRESH_BINARY)
+    M=cv.moments(thresh)
+    inputCentroids=np.zeros(5)
+    for i in range (5):
+        cX= int(M["m10"] / M["m00"])
+        cY= int(M["m01"] / M["m00"])
+        inputCentroids[i]=(cX,cY)    
+        print(inputCentroids)
+    #-- Detect cans
     cans = cans_cascade.detectMultiScale(frame_gray)
     if    np.sum(mask) > 0:
         for (x,y,w,h) in cans:
@@ -26,7 +37,7 @@ def detectAndDisplay(frame):
             frame = cv.ellipse(frame, center, (w//2, h//2), 0, 0, 360, (255, 0, 255), 4)
             faceROI = frame_gray[y:y+h,x:x+w]
             
-        cv.imshow('Capture - Face detection', frame)
+        cv.imshow('Capture - cans detection', frame)
 parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
 parser.add_argument('--cans_cascade', help='Path to cans cascade.', default='/home/bot/catkin_ws/src/LARM-violet/groupe-violet/data/classifier/cascade.xml')
 parser.add_argument('--camera', help='Camera divide number.', type=int, default=0)

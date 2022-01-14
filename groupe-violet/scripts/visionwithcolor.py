@@ -21,14 +21,16 @@ def detectAndDisplay(frame):
     mask = cv2.inRange(hsv, lower_red, upper_red)
 
     #for the centroids x and y coordinates
-    thresh=cv.threshold(frame_gray,127,255,cv.THRESH_BINARY)
-    M=cv.moments(thresh)
-    inputCentroids=np.zeros(5)
+    #thresh=cv.threshold(frame_gray,127,255,cv.THRESH_BINARY)
+    M=cv.moments(mask)
+    inputCentroids=np.zeros((5,2))
     for i in range (5):
-        cX= int(M["m10"] / M["m00"])
-        cY= int(M["m01"] / M["m00"])
-        inputCentroids[i]=(cX,cY)    
-        print(inputCentroids)
+        if M["m00"] != 0:
+            cX= int(M["m10"] / M["m00"])
+            cY= int(M["m01"] / M["m00"])
+            inputCentroids[i]=(cX,cY)    
+            print(inputCentroids)
+        else : cX,cY = 0,0
     #-- Detect cans
     cans = cans_cascade.detectMultiScale(frame_gray)
     if    np.sum(mask) > 0:

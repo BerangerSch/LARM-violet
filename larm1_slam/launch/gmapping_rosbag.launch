@@ -1,0 +1,18 @@
+<launch>
+    <!-- ===== SIMULATION ===== -->
+    <param name="/use_sim_time" value="true"/>
+    <node pkg="gmapping" type="slam_gmapping" name="gmapping_node" >
+        <remap from="base_scan" to="scan"/>
+    </node>
+
+    <!-- ===== VISION ===== -->
+    <node pkg="grp-violet" name="vision" type="vision.py" />
+    <node pkg="grp-violet" name="marker" type="marker.py" />
+
+    <!-- ===== VISUALIZATION ===== -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grp-violet)/rviz/rviz_config.rviz">
+    </node>
+
+    <node pkg="tf" type="static_transform_publisher" name="base_footprint_in_odom" 
+    args="1 0 0 0 0 1 /base_footprint /laser 100" />
+</launch>

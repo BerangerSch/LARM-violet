@@ -8,8 +8,8 @@ rate = rospy.Rate(10)
 
 publisher = rospy.Publisher('/bottle', Pose, queue_size=1)
 p = Pose()
-p.position.x = 1100 #x
-p.position.y = 3 #depth
+p.position.x = 200 #x
+p.position.y = 1 #depth
 while not rospy.is_shutdown():
     publisher.publish(p)
     rate.sleep()

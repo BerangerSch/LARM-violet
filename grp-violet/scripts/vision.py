@@ -8,9 +8,15 @@ import matplotlib.pyplot as plt
 import cv2
 import numpy as np
 import os
-#======================DETECTION PAR ONDELETTES HAAR2============================
 import cv2 as cv
 import argparse
+import rospy
+from geometry_msgs.msg import Pose
+import math
+
+
+
+publisher = rospy.Publisher('/bottle', Pose, queue_size=1)
 
 # distance from camera to object(face) measured
 # centimeter
@@ -27,7 +33,7 @@ BLACK = (0, 0 , 0)
 fonts = cv2.FONT_HERSHEY_COMPLEX
  
 # cans detector object
-cans_detector = cv2.CascadeClassifier("/home/bot/catkin_ws/src/LARM-violet/groupe-violet/data/classifier2/cascade.xml")
+cans_detector = cv2.CascadeClassifier("/home/bot/catkin_ws/src/LARM-violet/grp-violet/data/classifier2/cascade.xml")
  
 # focal length finder function
 def Focal_Length_Finder(measured_distance, real_width, width_in_Ref_image):
@@ -43,8 +49,6 @@ def Distance_finder(Focal_Length, real_cans_width, cans_width_in_frame):
         return distance # return the distance
     else:
         distance = 0
-        
- 
  
 def cans_data(image):
  
@@ -69,24 +73,6 @@ def cans_data(image):
     # return the cans width in pixel
     return cans_width
  
- 
-# reading reference_image from directory
-path = '/home/bot/catkin_ws/src/LARM-violet/groupe-violet/data/Ref_image.jpg'
-print(os.path.exists(path))
-Ref_image = cv2.imread(path)
-print(type(Ref_image))
-# find the cans width(pixels) in the reference_image
-Ref_image_cans_width = cans_data(Ref_image)
- 
-# get the focal by calling "Focal_Length_Finder"
-# cans width in reference(pixels),
-# Known_distance(centimeters),
-# known_width(centimeters)
-Focal_length_found = Focal_Length_Finder(
-    Known_distance, Known_width, Ref_image_cans_width)
- 
-print(Focal_length_found)
-
 def detectAndDisplay(frame):
     frame_gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     frame_gray = cv.equalizeHist(frame_gray)
@@ -114,8 +100,29 @@ def detectAndDisplay(frame):
             center = (x + w//2, y + h//2)
             frame = cv.ellipse(frame, center, (w//2, h//2), 0, 0, 360, (255, 0, 255), 4)
             faceROI = frame_gray[y:y+h,x:x+w]
+            return center
             
         cv.imshow('Capture - cans detection', frame)
+
+
+ 
+# reading reference_image from directory
+path = '/home/bot/catkin_ws/src/LARM-violet/groupe-violet/data/Ref_image.jpg'
+print(os.path.exists(path))
+Ref_image = cv2.imread(path)
+print(type(Ref_image))
+# find the cans width(pixels) in the reference_image
+Ref_image_cans_width = cans_data(Ref_image)
+ 
+# get the focal by calling "Focal_Length_Finder"
+# cans width in reference(pixels),
+# Known_distance(centimeters),
+# known_width(centimeters)
+Focal_length_found = Focal_Length_Finder(
+    Known_distance, Known_width, Ref_image_cans_width)
+ 
+print(Focal_length_found)
+
 parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
 parser.add_argument('--cans_cascade', help='Path to cans cascade.', default='/home/bot/catkin_ws/src/LARM-violet/groupe-violet/data/classifier2/cascade.xml')
 parser.add_argument('--camera', help='Camera divide number.', type=int, default=0)
@@ -130,6 +137,7 @@ if not cans_cascade.load(cv.samples.findFile(cans_cascade_name)):
 camera_device = args.camera
 #-- 2. Read the video stream
 cap = cv.VideoCapture(camera_device)
+coord = Pose
 if not cap.isOpened:
     print('--(!)Error opening video capture')
     exit(0)
@@ -141,12 +149,23 @@ while True:
     if frame is None:
         print('--(!) No captured frame -- Break!')
         break
-    detectAndDisplay(frame)
+    center = detectAndDisplay(frame)
+    coord.position.x = center
     # finding the distance by calling function
         # Distance distance finder function need
         # these arguments the Focal_Length,
         # Known_width(centimeters),
         # and Known_distance(centimeters)
-    Distance = Distance_finder( Focal_length_found, Known_width, cans_width_in_frame)
+    distance = Distance_finder( Focal_length_found, Known_width, cans_width_in_frame)
+    
+    #Conversion of the depth and position of the bottle on the camera to coordonates on the map
+    angle = 43.5*(center-640)/640
+    coord.position.x = math.cos(angle)*distance
+    coord.position.y = math.sin(angle)*distance
+
+
+    coord.position.y = distance
+    publisher.publish(coord)
+
     if cv.waitKey(10) == 27:
         break

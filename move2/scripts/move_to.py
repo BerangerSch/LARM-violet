@@ -5,17 +5,23 @@ from std_msgs.msg import String
 from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import Twist
 import tf
+from math import atan2
+from nav_msgs.msg import Odometry
 
 rospy.init_node('listener', anonymous=True)
 tfListener = tf.TransformListener()
 commandPublisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 
 def callback(data):
-    #our goal
+ 
+    #( coordonnees de goal pour comparer ensuite l'orientation du robot par rapport au goal)
+    #x=data.pose.position.x
+    #y=data.pose.position.y
+    #rot_q = msg.pose.pose.Quaternion.orientation
+    #(roll, pitch, theta) = euler_from_quaternion([rot_q.x, rot_q.y, rot_q.z, rot_q.w])
+    # angle_to_goal = atan2(y,x)
 
-    #data.pose.position.x
-
-
+   #our goal position
     local_goal= tfListener.transformPose("/base_footprint", data)
     print(type(local_goal))
     cmd= Twist()
@@ -56,10 +62,13 @@ def callback(data):
         cmd.linear.x= 0
         cmd.angular.z= -0.5
         commandPublisher.publish(cmd)
-    else:
-        cmd.linear.x= 0.4
-        cmd.angular.z= 0
+    elif abs(angle_to_goal - theta) > 0.1:
+        cmd.linear.x= 0.0
+        cmd.angular.z= 0.3
         commandPublisher.publish(cmd)
+    else :
+        cmd.linear.x = 0.5
+        cmd.angular.z = 0.0     
     print(data)
     
 def main():

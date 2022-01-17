@@ -15,13 +15,41 @@
 
     <node pkg="tf" type="static_transform_publisher" name="base_footprint_in_odom"
      args="2.3 4.0 0.01 0.8 0.0 0.0 /odom /base_footprint 80"/>
-
+     
+<!-- MAP SERVER -->     
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find larm1_slam)/maps/dia.yaml" />
+    
     <!-- <node pkg="move2" type="move_to.py" name="gogogo" output="screen">
     </node> -->
-
-    <!--node pkg="gmapping" type="slam_gmapping" name="gmapping_node">
-    </node-->
     
     <node pkg="rviz" type="rviz" name="rviz" args="-d $(find larm1_slam)/rviz/rviz_tf.rviz" />
+    
+<!-- AMCL -->
+     <node pkg="amcl" type="amcl" name="amcl" machine="$(arg machine)" output="log">
+         <remap from="scan" to="$(arg laser)/scan" />
+         <remap from="map" to="loc_map" />
+         <remap from="/diagnostics" to="diagnostics" />
+
+         <param name="initial_pose_x" value="$(arg robot_init_x)"/>
+         <param name="initial_pose_y" value="$(arg robot_init_y)"/>
+         <param name="initial_pose_a" value="$(arg robot_init_phi)"/>
+
+        <rosparam command="load" file="$(env ROBOT_BRINGUP_PATH)/parameters/localization/amcl.yaml" />
+     </node>
+
+<!-- move_base -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+    <rosparam file="$(find turtlebot3_navigation)/param/costmap_common_params_$(arg model).yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find turtlebot3_navigation)/param/costmap_common_params_$(arg model).yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find turtlebot3_navigation)/param/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot3_navigation)/param/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot3_navigation)/param/move_base_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot3_navigation)/param/dwa_local_planner_params_$(arg model).yaml" command="load" />
+    <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
+    <remap from="odom" to="$(arg odom_topic)"/>
+    <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)" />
+  </node>
+
 
 </launch>

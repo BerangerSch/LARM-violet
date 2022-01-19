@@ -121,24 +121,26 @@ Focal_length_found = Focal_Length_Finder(
  
 print(Focal_length_found)
 
-parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
-parser.add_argument('--cans_cascade', help='Path to cans cascade.', default='/home/bot/catkin_ws/src/LARM-violet/groupe-violet/data/classifier2/cascade.xml')
-parser.add_argument('--camera', help='Camera divide number.', type=int, default=0)
-args = parser.parse_args()
-cans_cascade_name = args.cans_cascade
+# parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
+# parser.add_argument('--cans_cascade', help='Path to cans cascade.', default='/home/bot/catkin_ws/src/LARM-violet/groupe-violet/data/classifier2/cascade.xml')
+# parser.add_argument('--camera', help='Camera divide number.', type=int, default=0)
+# args = parser.parse_args()
+# cans_cascade_name = args.cans_cascade
+cans_cascade_name='/home/bot/catkin_ws/src/LARM-violet/groupe-violet/data/classifier2/cascade.xml'
 cans_cascade = cv.CascadeClassifier()
 #-- 1. Load the cascades
 if not cans_cascade.load(cv.samples.findFile(cans_cascade_name)):
     print('--(!)Error loading face cascade')
     exit(0)
 
-camera_device = args.camera
+camera_device = 0
 #-- 2. Read the video stream
 cap = cv.VideoCapture(camera_device)
 coord = Pose()
 if not cap.isOpened:
     print('--(!)Error opening video capture')
     exit(0)
+#rate = rospy.Rate(10) # 10hz  
 while True:
     ret, frame = cap.read()
      # calling cans_data function to find
@@ -164,6 +166,6 @@ while True:
         coord.position.y = math.sin(angle)*distance
         coord.position.y = distance
         publisher.publish(coord)
-
+        #rate.sleep()
     if cv.waitKey(10) == 27:
         break

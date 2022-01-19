@@ -21,16 +21,15 @@
 
     <param name="/use_sim_time" value="true" />
 
-    <include file="$(find larm)/launch/challenge-3.launch">
-    </include>
+
     <node pkg="tf" type="static_transform_publisher" name="camera_in_base_link"
      args="0.2 0.0 0.1 0.0 0.0 0.0 /base_link /camera_link 80" /> -->
     
     <!-- velocity commands multiplexer -->
-  <node pkg="nodelet" type="nodelet" name="cmd_vel_mux" args="load yocs_cmd_vel_mux/CmdVelMuxNodelet mobile_base_nodelet_manager">
+ <!--<node pkg="nodelet" type="nodelet" name="cmd_vel_mux" args="load yocs_cmd_vel_mux/CmdVelMuxNodelet mobile_base_nodelet_manager">
     <param name="yaml_cfg_file" value="$(find turtlebot_bringup)/param/mux.yaml"/>
     <remap from="cmd_vel_mux/output" to="mobile_base/commands/velocity"/>
-  </node>
+  </node> -->
   
      
      
@@ -57,7 +56,7 @@
     <rosparam file="$(find move2)/param/move_base_params.yaml" command="load" />
     <rosparam file="$(find move2)/param/global_planner_params.yaml" command="load" />
     <rosparam file="$(find move2)/param/navfn_global_planner_params.yaml" command="load" />
-    <remap from="/cmd_vel" to="/cmd_vel_mux/input/navi"/>
+    <remap from="/cmd_vel" to="mobile_base/commands/velocity"/>
   </node>
 
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from __future__ import print_function
+from tokenize import Double
 
 from sklearn.cluster import KMeans
 from sklearn.neighbors import KNeighborsClassifier
@@ -42,13 +43,10 @@ def Focal_Length_Finder(measured_distance, real_width, width_in_Ref_image):
     focal_length = (width_in_Ref_image * measured_distance) / real_width
     return focal_length
  
-# distance estimation function
+# distance estimation function  
 def Distance_finder(Focal_Length, real_cans_width, cans_width_in_frame):
-    if cans_width_in_frame != 0:
-        distance = (real_cans_width * Focal_Length)/cans_width_in_frame
-        return distance # return the distance
-    else:
-        distance = 0
+   distance = (real_cans_width * Focal_Length)/cans_width_in_frame
+   return int(distance) # return the distance
  
 def cans_data(image):
  
@@ -110,7 +108,7 @@ def detectAndDisplay(frame):
 path = '/home/bot/catkin_ws/src/LARM-violet/groupe-violet/data/Ref_image.jpg'
 print(os.path.exists(path))
 Ref_image = cv2.imread(path)
-print(type(Ref_image))
+#print(type(Ref_image))
 # find the cans width(pixels) in the reference_image
 Ref_image_cans_width = cans_data(Ref_image)
  
@@ -137,7 +135,7 @@ if not cans_cascade.load(cv.samples.findFile(cans_cascade_name)):
 camera_device = args.camera
 #-- 2. Read the video stream
 cap = cv.VideoCapture(camera_device)
-coord = Pose
+coord = Pose()
 if not cap.isOpened:
     print('--(!)Error opening video capture')
     exit(0)
@@ -150,22 +148,21 @@ while True:
         print('--(!) No captured frame -- Break!')
         break
     center = detectAndDisplay(frame)
-    coord.position.x = center
     # finding the distance by calling function
         # Distance distance finder function need
         # these arguments the Focal_Length,
         # Known_width(centimeters),
         # and Known_distance(centimeters)
-    distance = Distance_finder( Focal_length_found, Known_width, cans_width_in_frame)
+    if cans_width_in_frame != 0:
+        distance = Distance_finder( Focal_length_found, Known_width, cans_width_in_frame)
     
     #Conversion of the depth and position of the bottle on the camera to coordonates on the map
-    angle = 43.5*(center-640)/640
-    coord.position.x = math.cos(angle)*distance
-    coord.position.y = math.sin(angle)*distance
-
-
-    coord.position.y = distance
-    publisher.publish(coord)
+        print(type(distance))
+        angle = 43.5*(center[0]-640)/640
+        coord.position.x = math.cos(angle)*distance
+        coord.position.y = math.sin(angle)*distance
+        coord.position.y = distance
+        publisher.publish(coord)
 
     if cv.waitKey(10) == 27:
         break

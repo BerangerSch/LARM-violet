@@ -35,7 +35,7 @@ BLACK = (0, 0 , 0)
 fonts = cv2.FONT_HERSHEY_COMPLEX
  
 # cans detector object
-cans_detector = cv2.CascadeClassifier("/home/bot/catkin_ws/src/LARM-violet/grp-violet/data/classifier2/cascade.xml")
+cans_detector = cv2.CascadeClassifier("/home/bot/catkin_ws/src/LARM-violet/move2/data/classifier2/cascade.xml")
  
 # focal length finder function
 def Focal_Length_Finder(measured_distance, real_width, width_in_Ref_image):
@@ -106,7 +106,7 @@ def detectAndDisplay(frame):
 
  
 # reading reference_image from directory
-path = '/home/bot/catkin_ws/src/LARM-violet/groupe-violet/data/Ref_image.jpg'
+path = '/home/bot/catkin_ws/src/LARM-violet/move2/data/Ref_image.jpg'
 print(os.path.exists(path))
 Ref_image = cv2.imread(path)
 #print(type(Ref_image))

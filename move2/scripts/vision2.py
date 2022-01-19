@@ -151,6 +151,10 @@ def proceesImage(raw):
         # these arguments the Focal_Length,
         # Known_width(centimeters),
         # and Known_distance(centimeters)
+
+    print(type(center))
+    print(center)
+    
     if cans_width_in_frame != 0:
         distance = Distance_finder( Focal_length_found, Known_width, cans_width_in_frame)
     

@@ -33,7 +33,7 @@
      
      
  <!-- ===== VISION ===== -->
-    <node pkg="move2" name="vision2" type="vision2.py" />
+    <node pkg="move2" name="vision2" type="vision2.py" output="screen" />
     <node pkg="move2" name="marker" type="marker.py" />
 
  <!--visualisation-->

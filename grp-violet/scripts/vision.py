@@ -139,6 +139,7 @@ coord = Pose()
 if not cap.isOpened:
     print('--(!)Error opening video capture')
     exit(0)
+rate = rospy.Rate(10) # 10Hz
 while True:
     ret, frame = cap.read()
      # calling cans_data function to find
@@ -163,6 +164,7 @@ while True:
         coord.position.y = math.sin(angle)*distance
         coord.position.y = distance
         publisher.publish(coord)
+        rate.sleep()
 
     if cv.waitKey(10) == 27:
         break

@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 import geometry_msgs.msg as geo_msgs
 from geometry_msgs.msg import Pose

@@ -31,6 +31,7 @@ GREEN= ( 0, 255 , 0 )
 RED= (0, 0, 255 )
 WHITE = (255, 255, 255)
 BLACK = (0, 0 , 0)
+
 #definir les fonts
 fonts = cv2.FONT_HERSHEY_COMPLEX
  
@@ -82,7 +83,7 @@ def detectAndDisplay(frame):
     upper_red = np.array([0,100,100])
     mask = cv2.inRange(hsv, lower_red, upper_red)
 
-    #for the centroids x and y coordinates detection
+    # for the centroids x and y coordinates detection
     M=cv.moments(mask)
     inputCentroids=np.zeros((5,2))
     for i in range (5):
@@ -92,7 +93,7 @@ def detectAndDisplay(frame):
             inputCentroids[i]=(cX,cY)    
             print(inputCentroids)
         else : cX,cY = 0,0
-    #-- Detect cans
+    # Detect cans
     cans = cans_cascade.detectMultiScale(frame_gray)
     if    np.sum(mask) > 0:
         for (x,y,w,h) in cans:
@@ -109,7 +110,7 @@ def detectAndDisplay(frame):
 path = '/home/bot/catkin_ws/src/LARM-violet/move2/data/Ref_image.jpg'
 print(os.path.exists(path))
 Ref_image = cv2.imread(path)
-#print(type(Ref_image))
+
 # find the cans width(pixels) in the reference_image
 Ref_image_cans_width = cans_data(Ref_image)
  
@@ -129,7 +130,8 @@ print(Focal_length_found)
 # cans_cascade_name = args.cans_cascade
 cans_cascade_name='/home/bot/catkin_ws/src/LARM-violet/groupe-violet/data/classifier2/cascade.xml'
 cans_cascade = cv.CascadeClassifier()
-#-- 1. Load the cascades
+
+# Load the cascades
 if not cans_cascade.load(cv.samples.findFile(cans_cascade_name)):
     print('--(!)Error loading face cascade')
     exit(0)

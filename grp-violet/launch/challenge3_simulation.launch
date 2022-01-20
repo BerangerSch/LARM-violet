@@ -5,49 +5,25 @@
     <include file="$(find larm)/launch/challenge-3.launch">
     </include>
 
-    <!-- <include file="$(find tbot_gazebo)/launch/start_world.launch">
-        <arg name="world_file" value="$(find larm)/models/challenge-1.world" />
-        <param name="/use_sim_time" value="true"/>
-    </include>
-
-    <include file="$(find tbot_gazebo)/launch/spawn_tbot.launch">
-        <arg name="x" value="-3.32" />
-        <arg name="y" value="-2.95" />
-        <arg name="yaw" value="2.86"/>
-    </include> -->
-
-    <!-- <node pkg="tf" type="static_transform_publisher" name="base_footprint_in_odom"
-     args="2.3 4.0 0.01 0.8 0.0 0.0 /odom /base_footprint 80"/> -->
-     
-<!-- MAP SERVER -->     
+    <!--===== MAP SERVER =====-->     
     <node name="map_server" pkg="map_server" type="map_server" args="$(find grp-violet)/map/map.yaml" />
-    
+
     <node pkg="rviz" type="rviz" name="rviz" args="-d $(find grp-violet)/rviz/rviz_config_mapping.rviz" />
-    
-<!-- AMCL -->
-     <node pkg="amcl" type="amcl" name="amcl" output="log">
-         <!-- <remap from="scan" to="$(arg laser)/scan" />
-         <remap from="map" to="loc_map" />
-         <remap from="/diagnostics" to="diagnostics" />
 
-         <param name="initial_pose_x" value="$(arg robot_init_x)"/>
-         <param name="initial_pose_y" value="$(arg robot_init_y)"/>
-         <param name="initial_pose_a" value="$(arg robot_init_phi)"/>
+    <!--===== AMCL =====-->
+    <node pkg="amcl" type="amcl" name="amcl" output="log">
+    </node>
 
-        <rosparam command="load" file="$(env ROBOT_BRINGUP_PATH)/parameters/localization/amcl.yaml" /> -->
-     </node>
-
-<!-- move_base -->
-<node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-    <rosparam file="$(find grp-violet)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find grp-violet)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />   
-    <rosparam file="$(find grp-violet)/param/local_costmap_params.yaml" command="load" />   
-    <rosparam file="$(find grp-violet)/param/global_costmap_params.yaml" command="load" />
-    <rosparam file="$(find grp-violet)/param/dwa_local_planner_params.yaml" command="load" />
-    <rosparam file="$(find grp-violet)/param/move_base_params.yaml" command="load" />
-    <rosparam file="$(find grp-violet)/param/global_planner_params.yaml" command="load" />
-    <rosparam file="$(find grp-violet)/param/navfn_global_planner_params.yaml" command="load" />
-  </node>
-
+    <!--===== move_base =====-->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <rosparam file="$(find grp-violet)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find grp-violet)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />   
+        <rosparam file="$(find grp-violet)/param/local_costmap_params.yaml" command="load" />   
+        <rosparam file="$(find grp-violet)/param/global_costmap_params.yaml" command="load" />
+        <rosparam file="$(find grp-violet)/param/dwa_local_planner_params.yaml" command="load" />
+        <rosparam file="$(find grp-violet)/param/move_base_params.yaml" command="load" />
+        <rosparam file="$(find grp-violet)/param/global_planner_params.yaml" command="load" />
+        <rosparam file="$(find grp-violet)/param/navfn_global_planner_params.yaml" command="load" />
+    </node>
 
 </launch>

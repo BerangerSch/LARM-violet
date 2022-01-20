@@ -1,0 +1,7 @@
+le launch file makeMap.launch sert a creer le fichier .Yaml ( enregistrement de map ) pour l'ituliser par AMCL et move_base on , ces deux fichier sont dans le dossier map ( j'ai enregistré le map de 1er etage ) !!
+
+le rviz_config_mapping.rviz sont les config de r-viz
+
+le navigation_with_move_base c'est le launch file de la navigation autonome de notre robot quand on place un 2D goal dans r-viz 
+
+on n'a plus besoin du move_to.py dans scripts puisque on fait la navigation autonome avec move_base ! il sufit juste de lancer le navigation_with_base.launch et placer un mark dans le r-viz et le robot va ce deplacer automatiquement 

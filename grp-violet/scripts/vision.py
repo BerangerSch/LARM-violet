@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 from __future__ import print_function
-
+from tokenize import Double
+from cv_bridge import CvBridge
 from sklearn.cluster import KMeans
 from sklearn.neighbors import KNeighborsClassifier
 import matplotlib.pyplot as plt
@@ -12,10 +13,11 @@ import cv2 as cv
 import argparse
 import rospy
 from geometry_msgs.msg import Pose
+from sensor_msgs.msg import Image
 import math
 
 
-
+rospy.init_node("vision2",anonymous=True)
 publisher = rospy.Publisher('/bottle', Pose, queue_size=1)
 
 # distance from camera to object(face) measured
@@ -33,7 +35,7 @@ BLACK = (0, 0 , 0)
 fonts = cv2.FONT_HERSHEY_COMPLEX
  
 # cans detector object
-cans_detector = cv2.CascadeClassifier("/home/bot/catkin_ws/src/LARM-violet/grp-violet/data/classifier2/cascade.xml")
+cans_detector = cv2.CascadeClassifier("/home/bot/catkin_ws/src/LARM-violet/move2/data/classifier2/cascade.xml")
  
 # focal length finder function
 def Focal_Length_Finder(measured_distance, real_width, width_in_Ref_image):
@@ -42,13 +44,10 @@ def Focal_Length_Finder(measured_distance, real_width, width_in_Ref_image):
     focal_length = (width_in_Ref_image * measured_distance) / real_width
     return focal_length
  
-# distance estimation function
+# distance estimation function  
 def Distance_finder(Focal_Length, real_cans_width, cans_width_in_frame):
-    if cans_width_in_frame != 0:
-        distance = (real_cans_width * Focal_Length)/cans_width_in_frame
-        return distance # return the distance
-    else:
-        distance = 0
+   distance = (real_cans_width * Focal_Length)/cans_width_in_frame
+   return int(distance) # return the distance
  
 def cans_data(image):
  
@@ -107,10 +106,10 @@ def detectAndDisplay(frame):
 
  
 # reading reference_image from directory
-path = '/home/bot/catkin_ws/src/LARM-violet/groupe-violet/data/Ref_image.jpg'
+path = '/home/bot/catkin_ws/src/LARM-violet/move2/data/Ref_image.jpg'
 print(os.path.exists(path))
 Ref_image = cv2.imread(path)
-print(type(Ref_image))
+#print(type(Ref_image))
 # find the cans width(pixels) in the reference_image
 Ref_image_cans_width = cans_data(Ref_image)
  
@@ -123,32 +122,28 @@ Focal_length_found = Focal_Length_Finder(
  
 print(Focal_length_found)
 
-parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
-parser.add_argument('--cans_cascade', help='Path to cans cascade.', default='/home/bot/catkin_ws/src/LARM-violet/groupe-violet/data/classifier2/cascade.xml')
-parser.add_argument('--camera', help='Camera divide number.', type=int, default=0)
-args = parser.parse_args()
-cans_cascade_name = args.cans_cascade
+# parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
+# parser.add_argument('--cans_cascade', help='Path to cans cascade.', default='/home/bot/catkin_ws/src/LARM-violet/groupe-violet/data/classifier2/cascade.xml')
+# parser.add_argument('--camera', help='Camera divide number.', type=int, default=0)
+# args = parser.parse_args()
+# cans_cascade_name = args.cans_cascade
+cans_cascade_name='/home/bot/catkin_ws/src/LARM-violet/groupe-violet/data/classifier2/cascade.xml'
 cans_cascade = cv.CascadeClassifier()
 #-- 1. Load the cascades
 if not cans_cascade.load(cv.samples.findFile(cans_cascade_name)):
     print('--(!)Error loading face cascade')
     exit(0)
 
-camera_device = args.camera
-#-- 2. Read the video stream
-cap = cv.VideoCapture(camera_device)
-coord = Pose
-if not cap.isOpened:
-    print('--(!)Error opening video capture')
-    exit(0)
-while True:
-    ret, frame = cap.read()
-     # calling cans_data function to find
-    # the width of face(pixels) in the frame
+def proceesImage(raw):
+    bridge = CvBridge()
+    frame = bridge.imgmsg_to_cv2(raw,desired_encoding="bgr8")
+    coord = Pose()
+        # calling cans_data function to find
+        # the width of face(pixels) in the frame
     cans_width_in_frame = cans_data(frame)
     if frame is None:
         print('--(!) No captured frame -- Break!')
-        break
+        return
     center = detectAndDisplay(frame)
     coord.position.x = center
     # finding the distance by calling function
@@ -156,16 +151,21 @@ while True:
         # these arguments the Focal_Length,
         # Known_width(centimeters),
         # and Known_distance(centimeters)
-    distance = Distance_finder( Focal_length_found, Known_width, cans_width_in_frame)
+
+    print(type(center))
+    print(center)
+    
+    if cans_width_in_frame != 0:
+        distance = Distance_finder( Focal_length_found, Known_width, cans_width_in_frame)
     
     #Conversion of the depth and position of the bottle on the camera to coordonates on the map
-    angle = 43.5*(center-640)/640
-    coord.position.x = math.cos(angle)*distance
-    coord.position.y = math.sin(angle)*distance
+        print(type(distance))
+        angle = 43.5*(center[0]-640)/640
+        coord.position.x = math.cos(angle)*distance
+        coord.position.y = math.sin(angle)*distance
+        coord.position.y = distance
+        publisher.publish(coord)
+        #rate.sleep()
 
-
-    coord.position.y = distance
-    publisher.publish(coord)
-
-    if cv.waitKey(10) == 27:
-        break
+rospy.Subscriber("/camera/color/image_raw", Image, proceesImage)
+rospy.spin()

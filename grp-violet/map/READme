@@ -1,0 +1,1 @@
+Ce sont les  enregistrement de Gmapping dans un dossier par cette commande : $ rosrun map_server map_saver -f dia

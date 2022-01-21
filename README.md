@@ -45,6 +45,8 @@ Introduction :
 The goal of this project is to develop an autonomus mobile robot that achieves multiple tasks from mapping it's surroundings to autonomously navigate throught 
 it towards a preset goal while avoiding obtstacles, identifiying and localising sertant objects (nuka-cola-cans) then placing their location in the R-viz map .
 
+Launch files :
+- the detailed description of each launch file is availabe in the launch/READme files .
 
 Marking the bottles :
 

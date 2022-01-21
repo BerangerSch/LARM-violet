@@ -54,6 +54,8 @@ Autonomous nagivation :
 for this end we have opted to use the move_base pkg wich only requires the modification of few param.yaml for it to function along with the slam Gmapping node 
 Object detection algorithims :
 
+Object detection algorithims :
+
 for this part we adopted Haar's algorithims and apllied modification on it for more precision , starting by training the algorithims by creating the classifier XML file then modifying the script by adding more conditions to the code to avoid wrong detections such as color identification of the red circle of the logo . 
 
 Determination of the object's 2D position :

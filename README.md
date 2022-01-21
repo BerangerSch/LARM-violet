@@ -4,12 +4,22 @@
 - Beranger Scherpereel
 - Houssam Ouederni
 
+## Remerciement 
+
+We would like to thank our professors for introducing  us to this highly interesting and fun UV and most importantly , thank you for relentlesly answering our sometimes stupid questions over and over again until they got stuck in our brains .
 
 
 
 ## Installation
 
-this project requires the instalation of multiple packages before hand such as :
+The project requires the instalation of the following packages before hand :
+
+- move_base libraries and local planner :
+```bash
+sudo apt-get install ros-noetic-move-base
+
+sudo apt-get install ros-noetic-dwa-local-planner
+```
 - opencv_libraries for image processing and object identification algorithims :
 ```bash
 git clone https://github.com/opencv/opencv.git
@@ -27,12 +37,21 @@ ls -l bin/opencv_createsamples
 $ sudo apt install ros-noetic-openslam-gmapping ros-noetic-slam-gmapping
 ```
     
-# CHALLENGE 2 
+# CHALLENGE 3 
 
 Introduction :
 
-the idee for this project is mapping the environment ( wether from Rosbag data or directly from laser sensor's feedback) and locating multiple Nuka-cola-cans with the help of object detection algorithims then marking these cans on the rviz map with green rectangles
+The goal of this project is to develop an autonomus mobile robot that achieves multiple tasks from mapping it's surroundings to autonomously navigate throught 
+it towards a preset goal while avoiding obtstacles, identifiying and localising sertant objects (nuka-cola-cans) then placing their location in the R-viz map .
 
+
+Marking the bottles :
+
+this script receives the 3 coordinates of the bottles (subscribed to the vision node ) then converts thes coordinates to a map position then publishes thes positions in the /marker topic 
+
+Autonomous nagivation :
+
+for this end we have opted to use the move_base pkg wich only requires the modification of few param.yaml for it to function along with the slam Gmapping node 
 Object detection algorithims :
 
 for this part we adopted Haar's algorithims and apllied modification on it for more precision , starting by training the algorithims by creating the classifier XML file then modifying the script by adding more conditions to the code to avoid wrong detections such as color identification of the red circle of the logo . 
@@ -50,4 +69,5 @@ this part calculates the distance from the camera to the actual object's centroi
 -FocalLengthFinder (This function will return the focal length, which is used to find the distance)
 
 -Distance Finder (The distance finder function will return the distance in the centimeters)
+
 
